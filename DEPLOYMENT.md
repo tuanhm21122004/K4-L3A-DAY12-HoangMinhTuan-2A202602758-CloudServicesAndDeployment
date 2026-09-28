@@ -91,9 +91,21 @@ content-type: application/json
 200 200 200 200 200 200 200 200 200 200 429 429 429 429 429
 ```
 
-## Ảnh Chụp Màn Hình
+## Ảnh Chụp Màn Hình Minh Chứng
 
-Đặt ảnh trong thư mục `screenshots/`:
+### 1. Dashboard Quản Lý Service trên Render Platform
+Bằng chứng service `day12-agent` và Key-Value Redis `day12-redis` đã deploy thành công, đồng bộ tự động từ Git repository và đang hoạt động (Live):
 
-- `screenshots/dashboard.png` — trang quản lý service trên platform
-- `screenshots/health.png` — kết quả gọi `/health` từ trình duyệt hoặc curl
+[![Render Dashboard](screenshots/dashboard.png)](screenshots/dashboard.png)
+
+*Xem ảnh kích thước gốc: [screenshots/dashboard.png](screenshots/dashboard.png)*
+
+---
+
+### 2. Kết Quả Gọi Endpoint Kiểm Tra Trực Tiếp (Health, Ready & Docs)
+Bằng chứng service phản hồi thực tế từ môi trường Cloud qua trình duyệt và terminal:
+
+[![Live Endpoint Verification](screenshots/health.png)](screenshots/health.png)
+
+*Xem ảnh kích thước gốc: [screenshots/health.png](screenshots/health.png)*
+
