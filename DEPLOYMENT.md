@@ -12,7 +12,7 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://k4-l3a-day12-hoangminhtuan.onrender.com |
+| Public URL | https://day12-agent-mxmr.onrender.com |
 | Platform | Render |
 | Ngày deploy | 2026-09-28 |
 
@@ -35,18 +35,18 @@ Thay `<URL>` bằng Public URL ở trên:
 
 ```bash
 # 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i https://k4-l3a-day12-hoangminhtuan.onrender.com/health
+curl -i https://day12-agent-mxmr.onrender.com/health
 
 # 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i https://k4-l3a-day12-hoangminhtuan.onrender.com/ready
+curl -i https://day12-agent-mxmr.onrender.com/ready
 
 # 3. Không có API key — mong đợi 401
-curl -i -X POST https://k4-l3a-day12-hoangminhtuan.onrender.com/ask \
+curl -i -X POST https://day12-agent-mxmr.onrender.com/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
 
 # 4. Có API key — mong đợi 200 kèm câu trả lời
-curl -i -X POST https://k4-l3a-day12-hoangminhtuan.onrender.com/ask \
+curl -i -X POST https://day12-agent-mxmr.onrender.com/ask \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $AGENT_API_KEY" \
   -H "X-User-Id: sv-test" \
@@ -54,7 +54,7 @@ curl -i -X POST https://k4-l3a-day12-hoangminhtuan.onrender.com/ask \
 
 # 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
 for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST https://k4-l3a-day12-hoangminhtuan.onrender.com/ask \
+  curl -s -o /dev/null -w "%{http_code} " -X POST https://day12-agent-mxmr.onrender.com/ask \
     -H "Content-Type: application/json" \
     -H "X-API-Key: $AGENT_API_KEY" \
     -H "X-User-Id: sv-test" \
@@ -68,22 +68,22 @@ Dán output của các lệnh trên vào đây:
 
 ```
 1. Liveness check:
-HTTP/1.1 200 OK
+HTTP/2 200 
 content-type: application/json
 {"status":"ok","service":"day12-agent","version":"1.0.0"}
 
 2. Readiness check:
-HTTP/1.1 200 OK
+HTTP/2 200 
 content-type: application/json
 {"status":"ready","redis":true}
 
 3. Unauthenticated request:
-HTTP/1.1 401 Unauthorized
+HTTP/2 401 
 content-type: application/json
 {"detail":"invalid or missing API key"}
 
 4. Authenticated request:
-HTTP/1.1 200 OK
+HTTP/2 200 
 content-type: application/json
 {"answer":"Mock LLM: Deploy là quá trình đưa ứng dụng lên máy chủ đám mây...","user_id":"sv-test","history_length":0,"cost_usd":0.00015,"tokens":{"in":12,"out":25}}
 
@@ -97,20 +97,3 @@ content-type: application/json
 
 - `screenshots/dashboard.png` — trang quản lý service trên platform
 - `screenshots/health.png` — kết quả gọi `/health` từ trình duyệt hoặc curl
-
----
-
-## Nếu Dùng Phương Án Dự Phòng
-
-Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng CP5 tối đa 60% điểm:
-
-1. Đặt `LOCAL_FALLBACK=true` trong `.env`
-2. Chạy `docker compose up -d` rồi kiểm tra `docker compose ps`
-3. Chụp màn hình vào `screenshots/`
-4. Chạy `pytest tests/test_cp5.py -v` — bộ test sẽ tự chuyển sang kiểm tra
-   `http://localhost:8000`
-5. Ghi rõ lý do không deploy được vào phần dưới đây:
-
-```
-Môi trường máy học viên chưa kích hoạt Docker daemon cục bộ và không có thẻ thanh toán quốc tế để kích hoạt tài nguyên trả phí trên nền tảng cloud, do đó sử dụng phương án dự phòng LOCAL_FALLBACK=true kết hợp xác minh toàn diện qua local TestClient và bộ test tự động.
-```
